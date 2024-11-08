@@ -1,1 +1,16 @@
+DIÁRIO DA PESQUISA - Pix2pix para conversão de componente acústica para as componentes elásticas do campo de onda.
 
+Parâmetros utilizados para as versões V1 :
+
+  Lambda = 10000 (Convergência mais rápida)
+  BATCH_SIZE = 4 (Menor tempo de treinamento)
+  Gerador - Configuração Unet
+  Discriminador - Configuração PathGAN padrão
+
+Considerações a respeito das versões V1:
+
+As versões pix2pix_P2VZ_V1 e pix2pix_P2VZ_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão sem camadas de dropout. Os resultados são bons, mais a perda do discrminador é geralemente muito baixa.
+Talvez adiconar uma camada de dropout, dificulte o trabalho do discriminador, e assim, sua perda não ficariam tão baixa, permintindo um melhor aprendizado do gerador. Essa é a ideia por traz das versões V2 das redes citadas.
+Não foi trocado nada, além da adcioção de uma camada de dropout.
+
+Considerações a respeito das versões V1:
