@@ -2,21 +2,21 @@ DIÁRIO DA PESQUISA - Pix2pix para conversão de componente acústica para as co
 
 Parâmetros utilizados para as versões V1:
 
-  Lambda = 10000 (Convergência mais rápida)
-  BATCH_SIZE = 4 (Menor tempo de treinamento)
+  Lambda = 10000 
+  BATCH_SIZE = 4 
   Gerador - Configuração Unet
   Discriminador - Configuração PathGAN padrão
   Função de perda da GAN - nn.BCEWithLogitsLoss() 
 
 Considerações a respeito das versões V1:
 
-As versões pix2pix_P2VZ_V1 e pix2pix_P2VZ_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralemente muito baixa. Vamos ver como a 
+As versões pix2pix_P2VZ_V1 e pix2pix_P2VX_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralemente muito baixa. Vamos ver como a 
 rede se comporta usando uma função de perda diferente. Ao invés de usarmos entropia cruzada (nn.BCEWithLogitsLoss()), vamos usar o erro médio quadrádico (nn.MSELoss()). Essa é ideia da segunda versão das redes citadas.
 
 Parâmetros utilizados para as versões V2:
 
-  Lambda = 10000 (Convergência mais rápida)
-  BATCH_SIZE = 4 (Menor tempo de treinamento)
+  Lambda = 10000
+  BATCH_SIZE = 4 
   Gerador - Configuração Unet
   Discriminador - Configuração PathGAN padrão
   Função de perda da GAN - nn.MSELoss() 
@@ -24,5 +24,31 @@ Parâmetros utilizados para as versões V2:
 Considerações a respeito das versões V2:
 
 Aparentimente, mudar a função de perda não trouxe muita alteração no comportamentas das perdas do gerador, do discriminador e da perda L1. Ainda há convergênica da perda do gerador e as perda do discriminador de forma
-recorrente ainda alcança valores muito pequeno, o que implica que o discriminador está ficando muito eficez e distinguir imagens falsa das reais.
+recorrente ainda alcança valores muito pequeno, o que implica que o discriminador está ficando muito eficez e distinguir imagens falsa das reais. as versões pix2pix_P2VZ_V2 e pix2pix_P2VX_V2 são semelhantes em resultados
+a versões anteriores.
+
+Parâmetros utilizados para as versões V3:
+
+  Lambda = 100 
+  BATCH_SIZE = 4 
+  Gerador - Configuração Unet
+  Discriminador - Configuração PathGAN padrão
+  Função de perda da GAN - nn.BCEWithLogitsLoss()  
+
+Considerações a respeito das versões V3:
+
+Mudar a função de perda não desmotrou muito impacto nos resultados. Um hiperparâmetro importante é o "lambda", aparentimento quando maior seu valor, mais acentuado é a convergênica. Os teste para "lambda = 100""
+
+Parâmetros utilizados para as versões V4:
+
+  Lambda = 1000 
+  BATCH_SIZE = 4 
+  Gerador - Configuração Unet
+  Discriminador - Configuração PathGAN padrão
+  Função de perda da GAN - nn.BCEWithLogitsLoss()  
+
+Considerações a respeito das versões V3:
+
+Mudar a função de perda não desmotrou muito impacto nos resultados. Um hiperparâmetro importante é o "lambda", aparentimento quando maior seu valor, mais acentuado é a convergênica. Os teste para "lambda = 100""
+
 
