@@ -6,11 +6,18 @@ Parâmetros utilizados para as versões V1 :
   BATCH_SIZE = 4 (Menor tempo de treinamento)
   Gerador - Configuração Unet
   Discriminador - Configuração PathGAN padrão
+  Função de perda da GAN - nn.BCEWithLogitsLoss() 
 
 Considerações a respeito das versões V1:
 
-As versões pix2pix_P2VZ_V1 e pix2pix_P2VZ_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão sem camadas de dropout. Os resultados são bons, mais a perda do discrminador é geralemente muito baixa.
-Talvez adiconar uma camada de dropout, dificulte o trabalho do discriminador, e assim, sua perda não ficariam tão baixa, permintindo um melhor aprendizado do gerador. Essa é a ideia por traz das versões V2 das redes citadas.
-Não foi trocado nada, além da adcioção de uma camada de dropout.
+As versões pix2pix_P2VZ_V1 e pix2pix_P2VZ_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralemente muito baixa. Vamos ver como a 
+rede se comporta usando uma função de perda diferente. Ao invés de usarmos entropia cruzada (nn.BCEWithLogitsLoss()), vamos usar o erro médio quadrádico (nn.MSELoss()). Essa é ideia da segunda versão das redes citadas.
 
 Considerações a respeito das versões V1:
+
+  Lambda = 10000 (Convergência mais rápida)
+  BATCH_SIZE = 4 (Menor tempo de treinamento)
+  Gerador - Configuração Unet
+  Discriminador - Configuração PathGAN padrão
+  Função de perda da GAN - nn.MSELoss() 
+
