@@ -1,6 +1,6 @@
 DIÁRIO DA PESQUISA - Pix2pix para conversão de componente acústica para as componentes elásticas do campo de onda.
 
-Parâmetros utilizados para as versões V1 :
+Parâmetros utilizados para as versões V1:
 
   Lambda = 10000 (Convergência mais rápida)
   BATCH_SIZE = 4 (Menor tempo de treinamento)
@@ -13,11 +13,16 @@ Considerações a respeito das versões V1:
 As versões pix2pix_P2VZ_V1 e pix2pix_P2VZ_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralemente muito baixa. Vamos ver como a 
 rede se comporta usando uma função de perda diferente. Ao invés de usarmos entropia cruzada (nn.BCEWithLogitsLoss()), vamos usar o erro médio quadrádico (nn.MSELoss()). Essa é ideia da segunda versão das redes citadas.
 
-Considerações a respeito das versões V2:
+Parâmetros utilizados para as versões V2:
 
   Lambda = 10000 (Convergência mais rápida)
   BATCH_SIZE = 4 (Menor tempo de treinamento)
   Gerador - Configuração Unet
   Discriminador - Configuração PathGAN padrão
   Função de perda da GAN - nn.MSELoss() 
+
+Considerações a respeito das versões V2:
+
+Aparentimente, mudar a função de perda não trouxe muita alteração no comportamentas das perdas do gerador, do discriminador e da perda L1. Ainda há convergênica da perda do gerador e as perda do discriminador de forma
+recorrente ainda alcança valores muito pequeno, o que implica que o discriminador está ficando muito eficez e distinguir imagens falsa das reais.
 
