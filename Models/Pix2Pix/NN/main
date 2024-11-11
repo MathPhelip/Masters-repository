@@ -10,14 +10,15 @@ com dados sintéticos.
 Passo 1: 
 
   - Usar dados sintéticos sem eventos de superfície;
-  - Fontes espalhadas no grid;
-  - Modelar 3061 datasets (256x256).
-
+  - Única frequência para todos os tiros;
+  - Fontes uniformimente espalhadas horizontalmente;
+  - Foi usado um conjunto de 30000 datasets (256x256) para treino e 61 para validação.
 
   FeedBack :
 
-    A simplicidade dos dadasets parecem não desafiar suficientimento o dsicriminador, que constantiemento alcança valores de perdas bem baixos. Apesar de haver um convergênica da perda do gerador e da norma L1, o discrimi-
-    nador aparenta ser forte demais para o conjunto de dados.
+    A simplicidade dos dadasets parecem não desafiar suficientimento o dsicriminador, que constantimento alcança valores bem pequenos de perdas. Apesar de haver um convergênica da perda do gerador e da norma L1, o discrimi-
+    nador aparenta ser forte demais para o conjunto de dados. Esse efeito pode levar o gerador não convergir suficentimente, gerando resultados subótimos, oq ue sustificar pq os resulatdos parecem ser muito bons em uns e
+    em outros, nota-se eventos que não são bem representados. Utilizar o conjunto de datasets mais robusto em termos de características, pode apresentar resultados melhores.
   
     Parâmetros utilizados para as versões V1:
     
@@ -64,19 +65,13 @@ Passo 1:
   
 Passo 2: 
 
-  - Usar dados sintéticos sem eventos de superfície;
-  - Fontes espalhadas no grid;
-  - Modelar dados com frequências diferentes (Pelo menos três frequências).
-  - Modelar 4000 datasets (256x256) com frequências diferentes, ou seja 1000 datasets para cada frequência. Como cada sismograma é dividido em 8 pedaços, então são 125 tiros para cada frequência. Um total de 500
-    tiros que seram transformados em um conjunto 4000 datasets. Podemos usar 3500 para treinar e 500 para validar.
-
-Passo 3: 
-
-  - Usar dados sintéticos com eventos de superfície e sem eventos de superfície ;
-  - Fontes espalhadas no grid (Feito);
-  - Modelar dados com frequências diferentes (Não feito).
+  - Usar dados sintéticos sem eventos de superfície e com eventos de superfície;
+  - Fontes espalhadas horizontalmente no grid;
+  - Modelar dados com frequências diferentes (Pelo menos 4 frequências).
+  - Modelar 4000 datasets (256x256) com frequências diferentes, ou seja 1000 datasets para cada frequência. Como cada sismograma é dividido em 8 pedaços, então são 125 tiros para cada frequência. Um total de 500,
+    sendpo 250 com condição de superfície livre e 250 cem superfície livre. Os tiros que seram transformados em um conjunto 4000 datasets. Podemos usar 3500 para treinar e 500 para validar.
 
 Passo 4:
+
+
   
-
-
