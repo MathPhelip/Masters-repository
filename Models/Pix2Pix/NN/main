@@ -1,54 +1,82 @@
 DIÁRIO DA PESQUISA - Pix2pix para conversão de componente acústica para as componentes elásticas do campo de onda.
 
-Parâmetros utilizados para as versões V1:
+A pix2pix desmostrou uma boa eficiência em converter imagens acústica da onda P e componentes elásticas do campo de velocidade. O treinamento de rede é relativamente rápido, pórem a obtenção de bons resultados é muito
+sobre tentaiva e erro. Os testes iniciais usandodados sísmicos usados neste primeira fase são sintéticos sem eventos de superfície, ou seja, dados ideais, foram bem satisfatórios. Entretando, a simplicidade do dataset
+pode estar fazendo o discriminador ficar muito forte, pois as características não são tão desafiadoras e ele rapidamente aprende a distinguir o falso do real. É necessário uma estratégia de treino mais ampla, com dados
+variados para um apredizado mais geral, usando diferentes frequências, condições de superfície e posição da fontes (Já estavamos usando). O objetivo é obter uma rede com melhor eficácia possível, a treinando com dados 
+sintéticos variados, antes de usar dados reais, uma vez que esses dados possuem bastante ruído que não provem do cisalhamento. Por fim, comparar o treinamento de uma que só aprendeu com dados reais e um rede já treinada
+com dados sintéticos.
 
-  Lambda = 10000 
-  BATCH_SIZE = 4 
-  Gerador - Configuração Unet
-  Discriminador - Configuração PathGAN padrão
-  Função de perda da GAN - nn.BCEWithLogitsLoss() 
+Passo 1: 
 
-Considerações a respeito das versões V1:
+  - Usar dados sintéticos sem eventos de superfície;
+  - Fontes espalhadas no grid;
+  - Modelar 3061 datasets (256x256).
 
-As versões pix2pix_P2VZ_V1 e pix2pix_P2VX_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralemente muito baixa. Vamos ver como a 
-rede se comporta usando uma função de perda diferente. Ao invés de usarmos entropia cruzada (nn.BCEWithLogitsLoss()), vamos usar o erro médio quadrádico (nn.MSELoss()). Essa é ideia da segunda versão das redes citadas.
 
-Parâmetros utilizados para as versões V2:
+  FeedBack :
 
-  Lambda = 10000
-  BATCH_SIZE = 4 
-  Gerador - Configuração Unet
-  Discriminador - Configuração PathGAN padrão
-  Função de perda da GAN - nn.MSELoss() 
+  A simplicdade dos dadasets parecem não desafiar suficientimento o dsicriminador, que constantiemento alcança valores de perdas bem baixos. Apesar de haver um convergênica da perda do gerador e da norma L1, o discrimi-
+  nador aparenta ser forte demais para o conjunto de dados.
 
-Considerações a respeito das versões V2:
+  Parâmetros utilizados para as versões V1:
+  
+    Lambda = 10000 
+    BATCH_SIZE = 4 
+    DATA_SET_SIZE = 3000
+    Gerador - Configuração Unet
+    Discriminador - Configuração PathGAN padrão
+    Função de perda da GAN - nn.BCEWithLogitsLoss() 
+  
+  Considerações a respeito das versões V1:
+  
+  As versões pix2pix_P2VZ_V1 e pix2pix_P2VX_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralemente muito baixa. Vamos ver como a 
+  rede se comporta usando uma função de perda diferente. Ao invés de usarmos entropia cruzada (nn.BCEWithLogitsLoss()), vamos usar o erro médio quadrádico (nn.MSELoss()). Essa é ideia da segunda versão das redes citadas.
+  
+  Parâmetros utilizados para as versões V2:
+  
+    Lambda = 10000
+    BATCH_SIZE = 4 
+    DATA_SET_SIZE = 3000
+    Gerador - Configuração Unet
+    Discriminador - Configuração PathGAN padrão
+    Função de perda da GAN - nn.MSELoss() 
+  
+  Considerações a respeito das versões V2:
+  
+  Aparentimente, mudar a função de perda não trouxe muita alteração no comportamentas das perdas do gerador, do discriminador e da perda L1. Ainda há convergênica da perda do gerador e as perda do discriminador, de forma
+  recorrente, ainda alcança valores muito pequeno, o que implica que o discriminador está ficando muito eficez e distinguir imagens falsa das reais. As versões pix2pix_P2VZ_V2 e pix2pix_P2VX_V2 são semelhantes em resultados
+  a versões anteriores.
+  
+  Parâmetros utilizados para as versões V3:
+  
+    Lambda = 1000
+    BATCH_SIZE = 4
+    DATA_SET_SIZE = 3000
+    Gerador - Configuração Unet
+    Discriminador - Configuração PathGAN padrão
+    Função de perda da GAN - nn.BCEWithLogitsLoss()  
+  
+  Considerações a respeito das versões V3:
+  
+  Mudar a função de perda não desmotrou muito impacto nos resultados. Um hiperparâmetro importante é o "lambda", aparentimento quando maior seu valor, mais acentuada é a convergência. Isso pode se justifica porque
+  damos mais peso a norma L1, que define a diferença entre o predito e o real. Os teste para "lambda = 1000" mostraram que de fato, a convergência é menos acentuada.
+  
+Passo 2: 
 
-Aparentimente, mudar a função de perda não trouxe muita alteração no comportamentas das perdas do gerador, do discriminador e da perda L1. Ainda há convergênica da perda do gerador e as perda do discriminador de forma
-recorrente ainda alcança valores muito pequeno, o que implica que o discriminador está ficando muito eficez e distinguir imagens falsa das reais. as versões pix2pix_P2VZ_V2 e pix2pix_P2VX_V2 são semelhantes em resultados
-a versões anteriores.
+  - Usar dados sintéticos sem eventos de superfície;
+  - Fontes espalhadas no grid;
+  - Modelar dados com frequências diferentes (Pelo menos três frequências).
+  - Modelar 4000 datasets (256x256) com frequências diferentes, ou seja 1000 datasets para cada frequência. Como cada sismograma é dividido em 8 pedaços, então são 125 tiros para cada frequência. Um total de 500
+    tiros que seram transformados em um conjunto 4000 datasets. Podemos usar 3500 para treinar e 500 para validar.
 
-Parâmetros utilizados para as versões V3:
+Passo 3: 
 
-  Lambda = 100 
-  BATCH_SIZE = 4 
-  Gerador - Configuração Unet
-  Discriminador - Configuração PathGAN padrão
-  Função de perda da GAN - nn.BCEWithLogitsLoss()  
+  - Usar dados sintéticos com eventos de superfície e sem eventos de superfície ;
+  - Fontes espalhadas no grid (Feito);
+  - Modelar dados com frequências diferentes (Não feito).
 
-Considerações a respeito das versões V3:
-
-Mudar a função de perda não desmotrou muito impacto nos resultados. Um hiperparâmetro importante é o "lambda", aparentimento quando maior seu valor, mais acentuado é a convergênica. Os teste para "lambda = 100""
-
-Parâmetros utilizados para as versões V4:
-
-  Lambda = 1000 
-  BATCH_SIZE = 4 
-  Gerador - Configuração Unet
-  Discriminador - Configuração PathGAN padrão
-  Função de perda da GAN - nn.BCEWithLogitsLoss()  
-
-Considerações a respeito das versões V3:
-
-Mudar a função de perda não desmotrou muito impacto nos resultados. Um hiperparâmetro importante é o "lambda", aparentimento quando maior seu valor, mais acentuado é a convergênica. Os teste para "lambda = 100""
+Passo 4:
+  
 
 
