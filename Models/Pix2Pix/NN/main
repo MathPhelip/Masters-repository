@@ -2,10 +2,10 @@ DIÁRIO DA PESQUISA - Pix2pix para conversão de componente acústica para as co
 
 A pix2pix desmostrou uma boa eficiência em converter imagens acústica da onda P e componentes elásticas do campo de velocidade. O treinamento de rede é relativamente rápido, pórem a obtenção de bons resultados é muito
 sobre tentaiva e erro. Os testes iniciais usandodados sísmicos usados neste primeira fase são sintéticos sem eventos de superfície, ou seja, dados ideais, foram bem satisfatórios. Entretando, a simplicidade do dataset
-pode estar fazendo o discriminador ficar muito forte, pois as características não são tão desafiadoras e ele rapidamente aprende a distinguir o falso do real. É necessário uma estratégia de treino mais ampla, com dados
-variados para um apredizado mais geral, usando diferentes frequências, condições de superfície e posição da fontes (Já estavamos usando). O objetivo é obter uma rede com melhor eficácia possível, a treinando com dados 
-sintéticos variados, antes de usar dados reais, uma vez que esses dados possuem bastante ruído que não provem do cisalhamento. Por fim, comparar o treinamento de uma que só aprendeu com dados reais e um rede já treinada
-com dados sintéticos.
+pode estar fazendo o discriminador ficar muito forte, pois as características não são tão desafiadoras e ele rapidamente aprende a distinguir o falso do real. Uma abordagem simples é treinbar menos o discriminador do
+que o gerador, isso deverá implicar em uma perda do discriminador osciladando entre seu valor ótimo de 0.69. É necessário uma estratégia de treino mais ampla, com dados variados para um apredizado mais geral, usando 
+diferentes frequências, condições de superfície e posição da fontes (Já estavamos usando). O objetivo é obter uma rede com melhor eficácia possível, a treinando com dados  sintéticos variados, antes de usar dados reais,
+uma vez que esses dados possuem bastante ruído que não provem do cisalhamento. Por fim, comparar o treinamento de uma que só aprendeu com dados reais e um rede já treinada com dados sintéticos.
 
 Passo 1: 
 
@@ -18,7 +18,8 @@ Passo 1:
 
     A simplicidade dos dadasets parecem não desafiar suficientimento o dsicriminador, que constantimento alcança valores bem pequenos de perdas. Apesar de haver um convergênica da perda do gerador e da norma L1, o discrimi-
     nador aparenta ser forte demais para o conjunto de dados. Esse efeito pode levar o gerador não convergir suficentimente, gerando resultados subótimos, oq ue sustificar pq os resulatdos parecem ser muito bons em uns e
-    em outros, nota-se eventos que não são bem representados. Utilizar o conjunto de datasets mais robusto em termos de características, pode apresentar resultados melhores.
+    em outros, nota-se eventos que não são bem representados. A convergênica do gerador deve-se ao fato de que lambda está muito grande, ao seja na prada L1 está dominante da perda geral da GAN. Utilizar o conjunto de 
+    datasets mais robusto em termos de características, pode apresentar resultados melhores.
   
     Parâmetros utilizados para as versões V1:
     
@@ -31,37 +32,23 @@ Passo 1:
     
     Considerações a respeito das versões V1:
     
-    As versões pix2pix_P2VZ_V1 e pix2pix_P2VX_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralemente muito baixa. Vamos ver como a 
-    rede se comporta usando uma função de perda diferente. Ao invés de usarmos entropia cruzada (nn.BCEWithLogitsLoss()), vamos usar o erro médio quadrádico (nn.MSELoss()). Essa é ideia da segunda versão das redes citadas.
+    As versões pix2pix_P2VZ_V1 e pix2pix_P2VX_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralmente muito baixa. A perda da
+    GAN, devida a "Lambda" grande, não tem muito impacto na perda do Gerador, uma vez que L1 domina consideravelmente, o que pode explicar os resultados consideravelmente bons, já que está sendo forçado a imagem fake
+    ser igual a real. De maneira, o aumento do Lambda faz com que a rede se aproxime de uma CNN comum, ignorando a parte do GAN.
     
     Parâmetros utilizados para as versões V2:
     
-      Lambda = 10000
-      BATCH_SIZE = 4 
-      DATA_SET_SIZE = 3000
-      Gerador - Configuração Unet
-      Discriminador - Configuração PathGAN padrão
-      Função de perda da GAN - nn.MSELoss() 
-    
-    Considerações a respeito das versões V2:
-    
-    Aparentimente, mudar a função de perda não trouxe muita alteração no comportamentas das perdas do gerador, do discriminador e da perda L1. Ainda há convergênica da perda do gerador e as perda do discriminador, de forma
-    recorrente, ainda alcança valores muito pequeno, o que implica que o discriminador está ficando muito eficez e distinguir imagens falsa das reais. As versões pix2pix_P2VZ_V2 e pix2pix_P2VX_V2 são semelhantes em resultados
-    a versões anteriores.
-    
-    Parâmetros utilizados para as versões V3:
-    
-      Lambda = 1000
+      Lambda = 100
       BATCH_SIZE = 4
       DATA_SET_SIZE = 3000
       Gerador - Configuração Unet
       Discriminador - Configuração PathGAN padrão
       Função de perda da GAN - nn.BCEWithLogitsLoss()  
     
-    Considerações a respeito das versões V3:
+    Considerações a respeito das versões V2:
     
-    Mudar a função de perda não desmotrou muito impacto nos resultados. Um hiperparâmetro importante é o "lambda", aparentimento quando maior seu valor, mais acentuada é a convergência. Isso pode se justifica porque
-    damos mais peso a norma L1, que define a diferença entre o predito e o real. Os teste para "lambda = 1000" mostraram que de fato, a convergência é menos acentuada.
+    Durante o treino, reduzimos a quantidade de vezes que o discriminador é treinado para uma razão 2 por 1, ou seja, o discrinador é treinado a cada duas interações do gerador. Colacamos um valor de "Lambda" menor, para
+    a perda da GAN tenha sua colaboração na perda do gerador.
   
 Passo 2: 
 
