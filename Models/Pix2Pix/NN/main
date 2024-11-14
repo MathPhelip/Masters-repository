@@ -18,38 +18,68 @@ Passo 1:
 
     A simplicidade dos dadasets parecem não desafiar suficientimento o dsicriminador, que constantimento alcança valores bem pequenos de perdas. Apesar de haver um convergênica da perda do gerador e da norma L1, o discrimi-
     nador aparenta ser forte demais para o conjunto de dados. Esse efeito pode levar o gerador não convergir suficentimente, gerando resultados subótimos, oq ue sustificar pq os resulatdos parecem ser muito bons em uns e
-    em outros, nota-se eventos que não são bem representados. A convergênica do gerador deve-se ao fato de que lambda está muito grande, ao seja na prada L1 está dominante da perda geral da GAN. Utilizar o conjunto de 
-    datasets mais robusto em termos de características, pode apresentar resultados melhores.
+    em outros, nota-se eventos que não são bem representados. A convergência do gerador deve-se ao fato de que lambda está muito grande, ao seja na prada L1 está dominante da perda geral da GAN. Utilizar o conjunto de 
+    datasets mais robusto em termos de características, pode apresentar resultados melhores. O valor KERNEL_SIZE=4 foi definido com base no artigo "Seismic data interpolation with generative adversarial networks: the impact
+    of hyperparameters on the learning process and the interpolated solution", onde um valor 3 apresentou resultados melhores. O BATCH_SIZE=4 igual foi escolhido pelo custo computacional, cada época leva  menosde 1 min 
+    para rodar. É claro que a medida que diminuimos a quantidade de treino do discriminador, esse valor pode ser menor.  O valor de LEARNIG_RATE=2e^-10 foi escolhido com base nos resultados do tutorial.
+
+    Hiperparâmetros e treino da rede:
+
+      Para nossos testes vamos considerar valores de LAMBDA = 100 e 1000. segundo o artigo citado, quando maior o valor de LAMBDA menos artefatos teremos.
+      Para cada valor de LAMBDA vamos diminuir o treino do discriminador. A ideia é tentar fazer com a perda do discriminador não fique constantimente baixa.
+      Cada treino será feito com 100 épocas e os valores de 
+
+      Configuiração e hiperparâmetros constantes durante os testes:
+
+        BATCH_SIZE = 4
+        KERNEL_SIZE = 4
+        DATA_SET_SIZE = 3000
+        Gerador - Configuração Unet
+        Discriminador - Configuração PathGAN padrão
+        Função de perda da GAN - nn.BCEWithLogitsLoss() 
   
-    Parâmetros utilizados para as versões V1:
+      Hiperparâmetros usados para as versões V1:
+
+        LAMBDA = 100
+        Treino simultâneo do gerador e discriminador
+
+      Considerações a respeito das versões V1:
     
-      Lambda = 10000 
-      BATCH_SIZE = 4 
-      DATA_SET_SIZE = 3000
-      Gerador - Configuração Unet
-      Discriminador - Configuração PathGAN padrão
-      Função de perda da GAN - nn.BCEWithLogitsLoss() 
+        As versões pix2pix_P2VZ_V1 e pix2pix_P2VX_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralmente muito baixa. A perda da
+        GAN, devida a "Lambda" grande, não tem muito impacto na perda do Gerador, uma vez que L1 domina consideravelmente, o que pode explicar os resultados consideravelmente bons, já que está sendo forçado a imagem fake
+        ser igual a real. De maneira, o aumento do Lambda faz com que a rede se aproxime de uma CNN comum, ignorando a parte do GAN.
+      
+      Hiperparâmetros usados para as versões V2:
+
+        LAMBDA = 1000
+        Treino simultâneo do gerador e discriminador
+      
+      Considerações a respeito das versões V2:
+      
+        Durante o treino, reduzimos a quantidade de vezes que o discriminador é treinado para uma razão 2 por 1, ou seja, o discrinador é treinado a cada duas interações do gerador. Colacamos um valor de "Lambda" menor, para
+        a perda da GAN tenha sua colaboração na perda do gerador.
+
+      Hiperparâmetros usados para as versões V3:
+
+        LAMBDA = 1000
+        Treino discriminador a cada duas interações do gerador
+      
+      Considerações a respeito das versões V3:
+      
+        Durante o treino, reduzimos a quantidade de vezes que o discriminador é treinado para uma razão 2 por 1, ou seja, o discrinador é treinado a cada duas interações do gerador. Colacamos um valor de "Lambda" menor, para
+        a perda da GAN tenha sua colaboração na perda do gerador.
+
+      Hiperparâmetros usados para as versões V4:
+
+        LAMBDA = 1000
+        Treino discriminador a quatro interações do gerador
+      
+      Considerações a respeito das versões V4:
+      
+        Durante o treino, reduzimos a quantidade de vezes que o discriminador é treinado para uma razão 2 por 1, ou seja, o discrinador é treinado a cada duas interações do gerador. Colacamos um valor de "Lambda" menor, para
+        a perda da GAN tenha sua colaboração na perda do gerador.
+
     
-    Considerações a respeito das versões V1:
-    
-    As versões pix2pix_P2VZ_V1 e pix2pix_P2VX_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralmente muito baixa. A perda da
-    GAN, devida a "Lambda" grande, não tem muito impacto na perda do Gerador, uma vez que L1 domina consideravelmente, o que pode explicar os resultados consideravelmente bons, já que está sendo forçado a imagem fake
-    ser igual a real. De maneira, o aumento do Lambda faz com que a rede se aproxime de uma CNN comum, ignorando a parte do GAN.
-    
-    Parâmetros utilizados para as versões V2:
-    
-      Lambda = 100
-      BATCH_SIZE = 4
-      DATA_SET_SIZE = 3000
-      Gerador - Configuração Unet
-      Discriminador - Configuração PathGAN padrão
-      Função de perda da GAN - nn.BCEWithLogitsLoss()  
-    
-    Considerações a respeito das versões V2:
-    
-    Durante o treino, reduzimos a quantidade de vezes que o discriminador é treinado para uma razão 2 por 1, ou seja, o discrinador é treinado a cada duas interações do gerador. Colacamos um valor de "Lambda" menor, para
-    a perda da GAN tenha sua colaboração na perda do gerador.
-  
 Passo 2: 
 
   - Usar dados sintéticos sem eventos de superfície e com eventos de superfície;
