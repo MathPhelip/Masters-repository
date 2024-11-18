@@ -45,9 +45,8 @@ Passo 1:
 
       Considerações a respeito das versões V1:
     
-        As versões pix2pix_P2VZ_V1 e pix2pix_P2VX_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados são bons, mais a perda do discrminador é geralmente muito baixa. A perda da
-        GAN, devida a "Lambda" grande, não tem muito impacto na perda do Gerador, uma vez que L1 domina consideravelmente, o que pode explicar os resultados consideravelmente bons, já que está sendo forçado a imagem fake
-        ser igual a real. De maneira, o aumento do Lambda faz com que a rede se aproxime de uma CNN comum, ignorando a parte do GAN.
+        As versões pix2pix_P2VZ_V1 e pix2pix_P2VX_V1 utilizam um gerador com configuração Unet e um discriminador PathGAN padrão. Os resultados não são bons. Nota-se aterfatos evidentes, o que justifica o fato da da perda
+        L1 não ter convergido.
       
       Hiperparâmetros usados para as versões V2:
 
@@ -56,8 +55,9 @@ Passo 1:
       
       Considerações a respeito das versões V2:
       
-        Durante o treino, reduzimos a quantidade de vezes que o discriminador é treinado para uma razão 2 por 1, ou seja, o discrinador é treinado a cada duas interações do gerador. Colacamos um valor de "Lambda" menor, para
-        a perda da GAN tenha sua colaboração na perda do gerador.
+          Observa um melhora considerável nos resultados. Desta vez, a norma L1 convergiu como queriamos. O comportamento da GAN foi mantida, ou seja, o comportamento das perdas do gerador e do dsicriminador tem comporta-
+          mento quase opostos. Contudo a perda do discriminador, está constantimente muito baixa, o que implica que o mesma está ficando muito forte em distinguir o falso do verdairo. Isso, pode levar a rede a alcançar 
+          resultados subótimos. O próximo é tentar retarda o aprendizado do discriminador.
 
       Hiperparâmetros usados para as versões V3:
 
