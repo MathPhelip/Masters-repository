@@ -79,6 +79,17 @@ Passo 1:
         Durante o treino, reduzimos a quantidade de vezes que o discriminador é treinado para uma razão 2 por 1, ou seja, o discrinador é treinado a cada duas interações do gerador. Colacamos um valor de "Lambda" menor, para
         a perda da GAN tenha sua colaboração na perda do gerador.
 
+      Hiperparâmetros usados para as versões V5:
+
+        LAMBDA = 1000
+        Treino discriminador a quatro interações do gerador
+        Diminuição gradativa da taxa de aprendizado tanto do discriminador quanto do gerador apartir na época 
+      
+      Considerações a respeito das versões V5:
+      
+        Durante o treino, reduzimos a quantidade de vezes que o discriminador é treinado para uma razão 2 por 1, ou seja, o discrinador é treinado a cada duas interações do gerador. Colacamos um valor de "Lambda" menor, para
+        a perda da GAN tenha sua colaboração na perda do gerador.
+
     
 Passo 2: 
 
