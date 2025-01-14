@@ -1,0 +1,4 @@
+Versão 1
+Médias:
+RMSE médio VX: 0.01, SSIM Médio VX: 0.99
+RMSE médio VZ: 0.01, SSIM Médio VZ: 0.99
